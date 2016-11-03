@@ -82,11 +82,14 @@ public class TcpServerConnector implements Connector, TcpConnector {
 	}
 
 	@Override public void stop() {
-		bossGroup.shutdownGracefully(0, 1, TimeUnit.SECONDS).syncUninterruptibly();
-		workerGroup.shutdownGracefully(0, 1, TimeUnit.SECONDS).syncUninterruptibly();
-
-		workerGroup = null;
-		bossGroup = null;
+		if (bossGroup != null) {
+			bossGroup.shutdownGracefully(0, 1, TimeUnit.SECONDS).syncUninterruptibly();
+			bossGroup = null;
+		}
+		if (workerGroup != null) {
+			workerGroup.shutdownGracefully(0, 1, TimeUnit.SECONDS).syncUninterruptibly();
+			workerGroup = null;
+		}
 	}
 
 	@Override public void destroy() {
